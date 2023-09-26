@@ -163,7 +163,25 @@ public class apriltagTest extends LinearOpMode {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
-
+        double backBoard=9.0;
+        double sideBackBoard = 22.5;
+        double tag1 = 5.5 + 1.125;
+        double tag2 = 5.5 + 1.125*3 + 3.5;
+        double tag3  =5.5 + 1.125*5 + 3.5*2;
+        for (AprilTagDetection detection : currentDetections) {
+if(detection.id==1){
+    telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
+    telemetry.addData("y#1", 72-(sideBackBoard+tag1-detection.ftcPose.x));
+}
+            if(detection.id==2){
+                telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
+                telemetry.addData("y#1", 72-( sideBackBoard+tag2-detection.ftcPose.x));
+            }
+            if(detection.id==3){
+                telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
+                telemetry.addData("y#1", 72-( sideBackBoard+tag3-detection.ftcPose.x));
+            }
+        }
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
@@ -176,6 +194,7 @@ public class apriltagTest extends LinearOpMode {
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }   // end for() loop
+
 
         // Add "key" information to telemetry
         telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
