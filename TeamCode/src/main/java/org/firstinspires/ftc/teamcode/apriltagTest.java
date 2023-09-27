@@ -168,18 +168,20 @@ public class apriltagTest extends LinearOpMode {
         double tag1 = 5.5 + 1.125;
         double tag2 = 5.5 + 1.125*3 + 3.5;
         double tag3  =5.5 + 1.125*5 + 3.5*2;
+        double cameraX = 0;
+        double cameraY = 10;
         for (AprilTagDetection detection : currentDetections) {
-if(detection.id==1){
-    telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
-    telemetry.addData("y#1", 72-(sideBackBoard+tag1-detection.ftcPose.x));
-}
+            if(detection.id==1){
+                telemetry.addData("x#1", 72-(getX(cameraX,cameraY,detection)+backBoard));
+                telemetry.addData("y#1", 72-(sideBackBoard+tag1-getY(cameraX,cameraY,detection)));
+            }
             if(detection.id==2){
-                telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
-                telemetry.addData("y#1", 72-( sideBackBoard+tag2-detection.ftcPose.x));
+                telemetry.addData("x#1", 72-(getX(cameraX,cameraY,detection) +backBoard));
+                telemetry.addData("y#1", 72-( sideBackBoard+tag2-getY(cameraX,cameraY,detection)));
             }
             if(detection.id==3){
-                telemetry.addData("x#1", 72-(detection.ftcPose.y +backBoard));
-                telemetry.addData("y#1", 72-( sideBackBoard+tag3-detection.ftcPose.x));
+                telemetry.addData("x#1", 72-(getX(cameraX,cameraY,detection) +backBoard));
+                telemetry.addData("y#1", 72-( sideBackBoard+tag3-getY(cameraX,cameraY,detection)));
             }
         }
         // Step through the list of detections and display info for each one.
@@ -203,4 +205,31 @@ if(detection.id==1){
 
     }   // end method telemetryAprilTag()
 
+    /*
+    gets x coordinate of robot's center
+
+    angle1 = yaw? (if not, then pitch or roll)
+    h, v = camera's horizontal/vertical offset from center
+
+    */
+    public double getX (double h, double v, AprilTagDetection detection){
+        double d = Math.sqrt(Math.pow(h, 2) + Math.pow(v, 2));
+        //d sin alpha = h (or d cos alpha = v)
+        //alpha = inverse sin (h/d) or inverse cos (v/d)
+        double alpha = Math.asin(h/d);
+        double theta = alpha + detection.ftcPose.yaw;
+        double x = detection.ftcPose.y;
+        double xAdjusted = x - (d*Math.cos(theta));
+        return xAdjusted;
+    }
+    public double getY (double h, double v, AprilTagDetection detection){
+        double d = Math.sqrt(Math.pow(h, 2) + Math.pow(v, 2));
+        //d sin alpha = h (or d cos alpha = v)
+        //alpha = inverse sin (h/d) or inverse cos (v/d)
+        double alpha = Math.asin(h/d);
+        double theta = alpha + detection.ftcPose.yaw;
+        double y = detection.ftcPose.x;
+        double yAdjusted = y + (d*Math.sin(theta));
+        return yAdjusted;
+    }
 }   // end class
